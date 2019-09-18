@@ -19,7 +19,7 @@
 	 */
 	Model.prototype.create = function (title, callback) {
 		title = title || '';
-		callback = callback || function () {};
+		callback = callback || function () { };
 
 		var newItem = {
 			title: title.trim(),
@@ -46,7 +46,7 @@
 	 */
 	Model.prototype.read = function (query, callback) {
 		var queryType = typeof query;
-		callback = callback || function () {};
+		callback = callback || function () { };
 
 		if (queryType === 'function') {
 			callback = query;
@@ -99,7 +99,7 @@
 			completed: 0,
 			total: 0
 		};
-
+		// findAll = store.js line 64, get the todo text from localstorage
 		this.storage.findAll(function (data) {
 			data.forEach(function (todo) {
 				if (todo.completed) {
