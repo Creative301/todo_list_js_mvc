@@ -60,6 +60,13 @@ describe('controller', function () {
 
 	it('should show entries on start-up', function () {
 		// TODO: write test
+		var todo = { title: 'my todo' };
+		setUpModel([todo]);
+
+		subject.setView('');
+
+		expect(model.read).toHaveBeenCalled();
+		expect(view.render).toHaveBeenCalledWith('showEntries', [todo]);
 	});
 
 	describe('routing', function () {
@@ -84,25 +91,24 @@ describe('controller', function () {
 
 		it('should show active entries', function () {
 			// TODO: write test
+			var todo = { title: 'my todo' };
+			setUpModel([todo]);
+
+			subject.setView('');
+			subject.showActive();
+
+			expect(view.render).toHaveBeenCalledWith('showEntries', [todo]);
 		});
 
 		it('should show completed entries', function () {
 			// TODO: write test
-			var todos = [
-				{
-					title: "my todo",
-					completed: true
-				},
-				{
-					title: "my todo 2",
-					completed: false
-				}
-			];
-			setUpModel(todos);
+			var todo = { title: 'my todo' };
+			setUpModel([todo]);
 
-			subject.setView('#/completed');
-			expect(view.render).toHaveBeenCalledWith("showEntries", todos);
-			expect(view.render).toHaveBeenCalledWith("setFilter", "completed");
+			subject.setView('');
+			subject.showCompleted();
+
+			expect(view.render).toHaveBeenCalledWith('showEntries', [todo]);
 		});
 	});
 
@@ -130,7 +136,7 @@ describe('controller', function () {
 		setUpModel([{ title: 'my todo', completed: true }]);
 
 		subject.setView('');
-		// clearCompletedButton = view.js: 113
+		// toggleAll = view.js: 113
 		expect(view.render).toHaveBeenCalledWith('toggleAll', {
 			checked: true
 		});
@@ -159,10 +165,38 @@ describe('controller', function () {
 	describe('toggle all', function () {
 		it('should toggle all todos to completed', function () {
 			// TODO: write test
+			var todos = ([
+				{ id: 42, title: 'my todo', completed: false },
+				{ id: 43, title: 'my todo 2', completed: false },
+				{ id: 44, title: 'my todo 3', completed: true },
+			]);
+			setUpModel(todos);
+
+			subject.setView('');
+
+			view.trigger('toggleAll', { completed: true });
+
+			expect(model.read).toHaveBeenCalledWith({ completed: false }, jasmine.any(Function));
+
+			expect(model.update).toHaveBeenCalledWith(42, { completed: true }, jasmine.any(Function));
+			expect(model.update).toHaveBeenCalledWith(43, { completed: true }, jasmine.any(Function));
 		});
 
 		it('should update the view', function () {
 			// TODO: write test
+			var todos = ([
+				{ id: 42, title: 'my todo', completed: false },
+				{ id: 43, title: 'my todo 2', completed: false },
+				{ id: 44, title: 'my todo 3', completed: true },
+			]);
+			setUpModel(todos);
+
+			subject.setView('');
+
+			view.trigger("toggleAll", { completed: true });
+
+			expect(view.render).toHaveBeenCalledWith('elementComplete', { id: 42, completed: true });
+			expect(view.render).toHaveBeenCalledWith('elementComplete', { id: 43, completed: true });
 		});
 	});
 
